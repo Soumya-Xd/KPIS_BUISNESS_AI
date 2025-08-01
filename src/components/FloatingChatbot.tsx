@@ -6,6 +6,9 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Send, Bot, User, Loader2, MessageCircle, X, Minimize2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
+import SpeechRecognition, { useSpeechRecognition } from "react-speech-recognition";
+import { Mic, MicOff } from "lucide-react";
+
 
 interface ChatMessage {
   id: string;
@@ -32,6 +35,20 @@ export function FloatingChatbot() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const WEBHOOK_URL = "https://soumya07yt.app.n8n.cloud/webhook/kpissssada";
+const {
+  transcript,
+  listening,
+  resetTranscript,
+  browserSupportsSpeechRecognition
+} = useSpeechRecognition();
+
+useEffect(() => {
+  // When speech ends and transcript is ready
+  if (!listening && transcript) {
+    setInput(transcript);
+    resetTranscript();
+  }
+}, [listening, transcript]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -262,32 +279,64 @@ const botMessage: ChatMessage = {
             
             <div className="p-4 border-t border-border/20 bg-muted/20">
               <div className="flex gap-2">
-                <Input
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  onKeyPress={handleKeyPress}
-                  placeholder="Ask about KPIs, teams, projects..."
-                  disabled={isLoading}
-                  className="flex-1 border-border/50 focus:border-primary/50 bg-background/50"
-                />
-                <Button 
-                  onClick={sendMessage} 
-                  disabled={!input.trim() || isLoading}
-                  size="sm"
-                  className={cn(
-                    "px-3 transition-all duration-200",
-                    "bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70",
-                    "disabled:opacity-50 disabled:cursor-not-allowed",
-                    !input.trim() || isLoading ? "" : "hover:scale-105 hover:shadow-md"
-                  )}
-                >
-                  {isLoading ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                  ) : (
-                    <Send className="h-4 w-4" />
-                  )}
-                </Button>
-              </div>
+  <Input
+    value={input}
+    onChange={(e) => setInput(e.target.value)}
+    onKeyPress={handleKeyPress}
+    placeholder="Ask about KPIs, teams, projects..."
+    disabled={isLoading}
+    className="flex-1 border-border/50 focus:border-primary/50 bg-background/50"
+  />
+  
+  {/* Mic Button */}
+  <Button
+    type="button"
+    size="icon"
+    variant="ghost"
+    onClick={() => {
+      if (!browserSupportsSpeechRecognition) {
+        toast({
+          title: "Voice not supported",
+          description: "Your browser does not support speech recognition.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      if (listening) {
+        SpeechRecognition.stopListening();
+      } else {
+        resetTranscript();
+        SpeechRecognition.startListening({ continuous: false });
+      }
+    }}
+    className={cn(
+      "border rounded-full px-1",
+      listening ? "bg-green-100" : "hover:bg-muted/40"
+    )}
+  >
+    {listening ? <MicOff className="h-4 w-4 text-destructive" /> : <Mic className="h-4 w-4" />}
+  </Button>
+
+  <Button 
+    onClick={sendMessage} 
+    disabled={!input.trim() || isLoading}
+    size="sm"
+    className={cn(
+      "px-3 transition-all duration-200",
+      "bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70",
+      "disabled:opacity-50 disabled:cursor-not-allowed",
+      !input.trim() || isLoading ? "" : "hover:scale-105 hover:shadow-md"
+    )}
+  >
+    {isLoading ? (
+      <Loader2 className="h-4 w-4 animate-spin" />
+    ) : (
+      <Send className="h-4 w-4" />
+    )}
+  </Button>
+</div>
+
 <p className="text-xs text-muted-foreground mt-2 text-center">
   Powered by AI{" "}
   <a
