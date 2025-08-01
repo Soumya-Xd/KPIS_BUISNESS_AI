@@ -1,6 +1,6 @@
 # KPIS_BUSINESS_AI
-live demo  :
-kpitest.netlify.app
+# live demo  :  kpitest.netlify.app
+
 A real-time KPI dashboard powered by AI and Google Sheets. Track project delivery, team insights, and tech stack analytics seamlessly.
 
 ---
