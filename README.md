@@ -23,3 +23,6 @@ A real-time KPI dashboard powered by AI and Google Sheets. Track project deliver
    ```bash
    git clone https://github.com/Soumya-Xd/KPIS_BUSINESS_AI.git
    cd KPIS_BUSINESS_AI
+   npm install
+   npm run dev
+   ```
