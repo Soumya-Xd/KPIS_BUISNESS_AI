@@ -2,8 +2,7 @@
 A real-time KPI dashboard powered by AI and Google Sheets. Track project delivery, team insights, and tech stack analytics seamlessly.
 
 ---
-# live demo  :  kpitest.netlify.app
-
+# live demo  : [ kpitest.netlify.app]
 
 
 ## 🚀 Features
@@ -28,3 +27,6 @@ A real-time KPI dashboard powered by AI and Google Sheets. Track project deliver
    npm install
    npm run dev
    ```
+## 📫 Contact
+
+Created by [Soumya Singha Roy](https://github.com/Soumya-Xd) — feel free to reach out!
